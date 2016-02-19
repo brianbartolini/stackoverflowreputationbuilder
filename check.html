@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>StackOverflow</title>
+	<style>
+		.templates {
+			display: none;
+		}
+		.item {
+			width: 25%;
+			float: left;
+			text-align: center;
+			font-family: Arial, sans-serif;
+		}
+		.item a {
+			color: black;
+			text-decoration: none;
+		}
+	</style>
+</head>
+<body>
+	
+	<p><input type="text" id="search" placeholder="Search for a Tag"/> <input type="submit" value="Go" id="submit"/></p>
+	<div class="results"></div>
+​
+​
+	<div class="templates">
+		<div class="item">
+			<a href="#" target="_blank">
+				<img src="https://i.stack.imgur.com/nGCYr.jpg?s=128&g=1" border="0"/>
+				<p>Name Here</p>
+			</a>
+		</div>
+	</div>
+​
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$('#submit').click(function(){
+				if($('#search').val()!=''){
+					var tag = $('#search').val();
+					$.getJSON('http://api.stackexchange.com/2.2/tags/'+tag+'/top-answerers/all_time?site=stackoverflow',function(data){
+							$.each(data.items, function(index,value){
+								var item = $('.templates .item').clone();
+								item.children('a').attr('href',value.user.link);
+								item.children('a').children('img').attr('src',value.user.profile_image);
+								item.children('a').children('p').html(value.user.display_name);
+								$('.results').append(item);
+							});
+					});
+				} else {
+					alert('Please enter a tag');
+				}
+			});
+		});
+	</script>
+</body>
+</html>
